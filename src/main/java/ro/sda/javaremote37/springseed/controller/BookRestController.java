@@ -1,10 +1,10 @@
 package ro.sda.javaremote37.springseed.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import ro.sda.javaremote37.springseed.dto.BookDto;
 import ro.sda.javaremote37.springseed.entities.Book;
+import ro.sda.javaremote37.springseed.services.BookService;
 
 import java.util.List;
 
@@ -12,8 +12,16 @@ import java.util.List;
 @RequestMapping("/api/book")
 public class BookRestController {
 
+    @Autowired
+    private BookService bookService;
     @GetMapping
     public List<BookDto> getAllBooks(){
+        return bookService.getAll();
 
+    }
+
+    @PostMapping
+    public BookDto createBook(@RequestBody BookDto bookDto){
+        return bookService.createBook(bookDto);
     }
 }

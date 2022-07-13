@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.sda.javaremote37.springseed.dto.BookDto;
 import ro.sda.javaremote37.springseed.entities.Book;
+import ro.sda.javaremote37.springseed.exceptions.EntityNotFoundError;
 import ro.sda.javaremote37.springseed.repository.BookRepository;
 
 import java.util.List;
@@ -17,14 +18,23 @@ public class BookService {
     private BookRepository bookRepository;
     private BookMapper bookMapper;
 
-    public List<BookDto> getAll() {
-       return bookRepository.findAll().stream().map(e->bookMapper.convertToDto(e)).collect(Collectors.toList());
+    public List<Book> getAllBooks() {
+
+        return bookRepository.findAll();
     }
 
-    public BookDto createBook(BookDto bookDto) {
-        Book entity = bookMapper.convertToEntity(bookDto);
-        entity= bookRepository.save(entity);
-        BookDto result = bookMapper.convertToDto(entity);
-        return result;
+    public void createBook(BookDto form) {
+        Book book = bookMapper.convertToEntity(form);
+        bookRepository.save(book);
+    }
+
+    public BookDto findById(long id) {
+        Book entityBook = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundError(String.format("Book with %s does not exist", id)));
+        return bookMapper.convertToDto(entityBook);
+    }
+
+    public void deleteById(long id) {
+        bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundError(String.format("Book with %s does not exist", id)));
+        bookRepository.deleteById(id);
     }
 }

@@ -10,5 +10,7 @@ import javax.persistence.Id;
 public class AuthorDto {
 
     private Long id;
+    private String firstName;
+    private String lastName;
 
 }
